@@ -1,0 +1,4 @@
+name: VanadiumBot
+version: @version@
+main: com.vanadiumconquest.vanadiumbot.VanadiumBot
+api-version: 1.13

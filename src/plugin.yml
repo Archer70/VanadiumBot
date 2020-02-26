@@ -1,0 +1,5 @@
+name: VanadiumBot
+version: 1.0
+author: LambdaFn
+main: com.vanadiumconquest.vanadiumbot.VanadiumBot
+api-version: 1.13
