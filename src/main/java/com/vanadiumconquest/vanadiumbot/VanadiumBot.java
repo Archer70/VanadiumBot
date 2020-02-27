@@ -40,7 +40,7 @@ public final class VanadiumBot extends JavaPlugin {
                 reportPlayers(event);
             }
 
-            if (event.getChannel().getIdAsString().equals(channelId)) {
+            if (event.getChannel().getIdAsString().equals(channelId) && !event.getMessageAuthor().isYourself()) {
                 String poster = event.getMessageAuthor().getDisplayName();
                 String message = event.getMessageContent();
                 this.getServer().broadcastMessage("[Discord] " + poster + " > " + message);
