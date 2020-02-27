@@ -10,16 +10,23 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 public final class VanadiumBot extends JavaPlugin {
-
     private DiscordApi discord;
+    private String token;
+    private String channelId;
 
     @Override
     public void onEnable() {
         this.saveDefaultConfig();
-        String token = this.getConfig().getString("discord_key");
+        token = this.getConfig().getString("discord_key");
+        channelId = this.getConfig().getString("chat_channel");
 
         if (token.equals("")) {
+            System.out.println("No discord_key provided in config.");
             return;
+        }
+
+        if (channelId.equals("")) {
+            System.out.println("No chat_channel id provided in config. Bot will be unable to send or receive chats.");
         }
 
         discord = new DiscordApiBuilder().setToken(token).login().join();
@@ -32,10 +39,16 @@ public final class VanadiumBot extends JavaPlugin {
             if (isPingEvent(event)) {
                 reportPlayers(event);
             }
+
+            if (event.getChannel().getIdAsString().equals(channelId)) {
+                String poster = event.getMessageAuthor().getDisplayName();
+                String message = event.getMessageContent();
+                this.getServer().broadcastMessage("[Discord] " + poster + " > " + message);
+            }
         });
 
         // From minecraft.
-        this.getServer().getPluginManager().registerEvents(new MessageListener(discord), this);
+        this.getServer().getPluginManager().registerEvents(new MessageListener(discord, channelId), this);
     }
 
     private void reportPlayers(MessageCreateEvent event) {
@@ -59,7 +72,9 @@ public final class VanadiumBot extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        discord.disconnect();
+        if (discord != null) {
+            discord.disconnect();
+        }
         discord = null;
     }
 }
